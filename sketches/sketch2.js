@@ -11,13 +11,17 @@ registerSketch('sk2', function (p) {
     cy = p.height / 2;
   };
 
+  function two(n) {
+    return (n < 10 ? '0' : '') + n;
+  }
+
   p.draw = function () {
     p.background(245);
 
     // circle guide
     p.noFill();
     p.stroke(200);
-    p.strokeWeight(1.5);
+    p.strokeWeight(1);
     p.circle(cx, cy, rSecond * 2);
     p.circle(cx, cy, rMinute * 2);
     p.circle(cx, cy, rHour * 2);
@@ -55,5 +59,25 @@ registerSketch('sk2', function (p) {
     const sy = cy + p.sin(secondAngle) * rSecond;
     p.fill(240, 120, 120); // pink/red
     p.circle(sx, sy, 10);
+
+    // Interaction (extra credit): hover to reveal digital time
+    const hover = p.dist(p.mouseX, p.mouseY, cx, cy) < 140;
+
+    if (hover) {
+      const hh = two(p.hour());
+      const mm = two(p.minute());
+      const ss = two(p.second());
+      const label = `${hh}:${mm}:${ss}`;
+
+      p.noStroke();
+      p.fill(255, 230);
+      p.rectMode(p.CENTER);
+      p.rect(cx, cy, 170, 60, 12);
+
+      p.fill(40);
+      p.textAlign(p.CENTER, p.CENTER);
+      p.textSize(24);
+      p.text(label, cx, cy);
+    }
   };
 });
