@@ -13,6 +13,40 @@ registerSketch('sk3', function (p) {
     cy = p.height / 2;
   };
 
+  function distToSegment(px, py, x1, y1, x2, y2) {
+    const vx = x2 - x1, vy = y2 - y1;
+    const wx = px - x1, wy = py - y1;
+
+    const c1 = vx * wx + vy * wy;
+    if (c1 <= 0) return Math.hypot(px - x1, py - y1);
+    const c2 = vx * vx + vy * vy;
+    if (c2 <= c1) return Math.hypot(px - x2, py - y2);
+
+    const t = c1 / c2;
+    const projx = x1 + t * vx;
+    const projy = y1 + t * vy;
+    return Math.hypot(px - projx, py - projy);
+  }
+
+  function drawTooltip(text, x, y) {
+    p.textSize(14);
+    p.textAlign(p.LEFT, p.CENTER);
+
+    const padX = 10;
+    const padY = 8;
+    const w = p.textWidth(text) + padX * 2;
+    const h = 30;
+    const tx = p.constrain(x + 12, 10, p.width - w - 10);
+    const ty = p.constrain(y - 10, 10, p.height - h - 10);
+
+    p.noStroke();
+    p.fill(255, 235);
+    p.rectMode(p.CORNER);
+    p.rect(tx, ty, w, h, 10);
+    p.fill(40);
+    p.text(text, tx + padX, ty + h / 2);
+  }
+
   p.draw = function () {
     p.background(248);
 
@@ -48,15 +82,24 @@ registerSketch('sk3', function (p) {
     const sx = mx + p.cos(sAngle) * sLen;
     const sy = my + p.sin(sAngle) * sLen;
 
+    // hover detection
+    const dH = distToSegment(p.mouseX, p.mouseY, cx, cy, hx, hy);
+    const dM = distToSegment(p.mouseX, p.mouseY, hx, hy, mx, my);
+    const dS = distToSegment(p.mouseX, p.mouseY, mx, my, sx, sy);
+
+    const thresh = 14;
+    const hoverH = dH < thresh && dH <= dM && dH <= dS;
+    const hoverM = dM < thresh && dM <= dH && dM <= dS;
+    const hoverS = dS < thresh && dS <= dH && dS <= dM;
+    p.strokeCap(p.ROUND);
+
     // draw chained hands
-    p.strokeCap(p.ROUND);
     p.stroke(40);
-    p.strokeWeight(18);
-    p.strokeCap(p.ROUND);
+    p.strokeWeight(hoverH ? 14 : 11);
     p.line(cx, cy, hx, hy);
-    p.strokeWeight(10);
+    p.strokeWeight(hoverM ? 10 : 7);
     p.line(hx, hy, mx, my);
-    p.strokeWeight(3);
+    p.strokeWeight(hoverS ? 6 : 3);
     p.line(mx, my, sx, sy);
 
     p.noStroke();
@@ -65,5 +108,10 @@ registerSketch('sk3', function (p) {
     p.circle(hx, hy, 12);
     p.circle(mx, my, 10);
     p.circle(sx, sy, 8);
+
+    // label
+    if (hoverH) drawTooltip("Hour hand", hx, hy);
+    else if (hoverM) drawTooltip("Minute hand", mx, my);
+    else if (hoverS) drawTooltip("Second hand", sx, sy);
   };
 });
