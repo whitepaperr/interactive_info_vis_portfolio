@@ -48,6 +48,12 @@ registerSketch('sk2', function (p) {
     p.fill(60); // dark gray
     p.circle(hx, hy, 14);
 
-    
+    // second orbit marker
+    const s = p.second();
+    const secondAngle = p.map(s, 0, 60, 0, p.TWO_PI) - p.HALF_PI;
+    const sx = cx + p.cos(secondAngle) * rSecond;
+    const sy = cy + p.sin(secondAngle) * rSecond;
+    p.fill(240, 120, 120); // pink/red
+    p.circle(sx, sy, 10);
   };
 });
