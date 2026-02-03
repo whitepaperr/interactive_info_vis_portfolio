@@ -1,6 +1,11 @@
 // Instance-mode sketch for tab 3
 registerSketch('sk3', function (p) {
   let cx, cy;
+
+  const hLen = 180;
+  const mLen = 140;
+  const sLen = 100;
+  const tickR = 260;
  
   p.setup = function () {
     p.createCanvas(750,750);
@@ -10,6 +15,18 @@ registerSketch('sk3', function (p) {
 
   p.draw = function () {
     p.background(248);
+
+    // background 12 ticks
+    p.stroke(220);
+    p.strokeWeight(2);
+    for (let i = 0; i < 12; i++) {
+      const a = p.map(i, 0, 12, 0, p.TWO_PI) - p.HALF_PI;
+      const x1 = cx + p.cos(a) * (tickR - 10);
+      const y1 = cy + p.sin(a) * (tickR - 10);
+      const x2 = cx + p.cos(a) * (tickR + 4);
+      const y2 = cy + p.sin(a) * (tickR + 4);
+      p.line(x1, y1, x2, y2);
+    }
 
     // time
     const h = p.hour() % 12;
@@ -21,24 +38,18 @@ registerSketch('sk3', function (p) {
     const mAngle = p.map(m + s / 60, 0, 60, 0, p.TWO_PI) - p.HALF_PI;
     const sAngle = p.map(s, 0, 60, 0, p.TWO_PI) - p.HALF_PI;
 
-    // lengths
-    const hLen = 160;
-    const mLen = 120;
-    const sLen = 90;
-
     // hour hand end
     const hx = cx + p.cos(hAngle) * hLen;
     const hy = cy + p.sin(hAngle) * hLen;
-
     // minute hand end (starts at hour tip)
     const mx = hx + p.cos(mAngle) * mLen;
     const my = hy + p.sin(mAngle) * mLen;
-
     // second hand end (starts at minute tip)
     const sx = mx + p.cos(sAngle) * sLen;
     const sy = my + p.sin(sAngle) * sLen;
 
     // draw chained hands
+    p.strokeCap(p.ROUND);
     p.stroke(40);
     p.strokeWeight(18);
     p.strokeCap(p.ROUND);
