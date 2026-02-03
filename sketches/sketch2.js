@@ -29,7 +29,6 @@ registerSketch('sk2', function (p) {
     p.stroke(80, 140, 220); // blue
     p.strokeWeight(8);
     p.strokeCap(p.ROUND);
-
     // start from top (12 o'clock)
     p.arc(
       cx,
@@ -39,5 +38,16 @@ registerSketch('sk2', function (p) {
       -p.HALF_PI,
       -p.HALF_PI + angle
     );
+
+    // hour dot
+    const h = p.hour() % 12;
+    const hourAngle = p.map(h, 0, 12, 0, p.TWO_PI) - p.HALF_PI;
+    const hx = cx + p.cos(hourAngle) * rHour;
+    const hy = cy + p.sin(hourAngle) * rHour;
+    p.noStroke();
+    p.fill(60); // dark gray
+    p.circle(hx, hy, 14);
+
+    
   };
 });
