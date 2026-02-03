@@ -32,5 +32,22 @@ registerSketch('sk4', function (p) {
       const r = hourRingStart + i * hourRingGap;
       p.circle(cx, cy, r * 2);
     }
+
+    // minute arc 
+    const m = p.minute(); // 0–59
+    const mAngle = p.map(m, 0, 60, 0, p.TWO_PI);
+
+    p.noFill();
+    p.stroke(80, 140, 220); // blue
+    p.strokeWeight(7);
+    p.strokeCap(p.ROUND);
+    p.arc(
+      cx,
+      cy,
+      rTime * 2,
+      rTime * 2,
+      -p.HALF_PI,
+      -p.HALF_PI + mAngle
+    );
   };
 });
