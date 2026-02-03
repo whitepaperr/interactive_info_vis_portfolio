@@ -34,7 +34,7 @@ registerSketch('sk4', function (p) {
     }
 
     // minute arc 
-    const m = p.minute(); // 0–59
+    const m = p.minute();
     const mAngle = p.map(m, 0, 60, 0, p.TWO_PI);
 
     p.noFill();
@@ -49,5 +49,15 @@ registerSketch('sk4', function (p) {
       -p.HALF_PI,
       -p.HALF_PI + mAngle
     );
+
+    // second dot
+    const s = p.second();
+    const sAngle = p.map(s, 0, 60, 0, p.TWO_PI) - p.HALF_PI;
+    const sx = cx + p.cos(sAngle) * rTime;
+    const sy = cy + p.sin(sAngle) * rTime;
+
+    p.noStroke();
+    p.stroke(240, 140, 170); // pink
+    p.circle(sx, sy, 10);
   };
 });
