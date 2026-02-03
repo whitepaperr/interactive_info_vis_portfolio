@@ -82,7 +82,7 @@ registerSketch('sk3', function (p) {
     const sx = mx + p.cos(sAngle) * sLen;
     const sy = my + p.sin(sAngle) * sLen;
 
-    // hover detection
+    // Interaction (extra credit): hover detection
     const dH = distToSegment(p.mouseX, p.mouseY, cx, cy, hx, hy);
     const dM = distToSegment(p.mouseX, p.mouseY, hx, hy, mx, my);
     const dS = distToSegment(p.mouseX, p.mouseY, mx, my, sx, sy);
