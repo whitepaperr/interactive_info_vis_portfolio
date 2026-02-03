@@ -5,7 +5,7 @@ registerSketch('sk4', function (p) {
   // layout radii
   const rTime = 260;
   const hourRingStart = 30;
-  const hourRingGap = 6;
+  const hourRingGap = 9;
   const maxHours = 24;
 
   p.setup = function () {
@@ -24,12 +24,18 @@ registerSketch('sk4', function (p) {
     p.circle(cx, cy, rTime * 2);
 
     // center base for hour accumulation
+    const h24 = p.hour();
     p.noFill();
-    p.stroke(200);
     p.strokeWeight(2);
 
     for (let i = 0; i < maxHours; i++) {
       const r = hourRingStart + i * hourRingGap;
+      // filled hours highlighted
+      if (i <= h24) {
+        p.stroke(220, 80, 90); // red
+      } else {
+        p.stroke(220); // light gray
+      }
       p.circle(cx, cy, r * 2);
     }
 
