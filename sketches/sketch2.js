@@ -5,6 +5,9 @@ registerSketch('sk2', function (p) {
   const rMinute = 260;
   const rSecond = 300;
 
+  const hourMarkerR = 10;
+  const triSize = 18
+
   p.setup = function () {
     p.createCanvas(750,750);
     cx = p.width / 2;
@@ -13,6 +16,19 @@ registerSketch('sk2', function (p) {
 
   function two(n) {
     return (n < 10 ? '0' : '') + n;
+  }
+
+  function drawTriangleAt(x, y, size, angleRad) {
+    const tipX = x + p.cos(angleRad) * (size * 0.9);
+    const tipY = y + p.sin(angleRad) * (size * 0.9);
+
+    const leftX = x + p.cos(angleRad + p.radians(120)) * (size * 0.6);
+    const leftY = y + p.sin(angleRad + p.radians(120)) * (size * 0.6);
+
+    const rightX = x + p.cos(angleRad - p.radians(120)) * (size * 0.6);
+    const rightY = y + p.sin(angleRad - p.radians(120)) * (size * 0.6);
+
+    p.triangle(tipX, tipY, leftX, leftY, rightX, rightY);
   }
 
   p.draw = function () {
@@ -33,7 +49,6 @@ registerSketch('sk2', function (p) {
     p.stroke(80, 140, 220); // blue
     p.strokeWeight(8);
     p.strokeCap(p.ROUND);
-    // start from top (12 o'clock)
     p.arc(
       cx,
       cy,
@@ -44,13 +59,31 @@ registerSketch('sk2', function (p) {
     );
 
     // hour dot
-    const h = p.hour() % 12;
-    const hourAngle = p.map(h, 0, 12, 0, p.TWO_PI) - p.HALF_PI;
-    const hx = cx + p.cos(hourAngle) * rHour;
-    const hy = cy + p.sin(hourAngle) * rHour;
-    p.noStroke();
-    p.fill(60); // dark gray
-    p.circle(hx, hy, 14);
+    let h12 = p.hour() % 12;
+    if (h12 === 0) h12 = 12;
+
+    for (let i = 1; i <= 12; i++) {
+      const a = p.map(i, 0, 12, 0, p.TWO_PI) - p.HALF_PI;
+      const x = cx + p.cos(a) * rHour;
+      const y = cy + p.sin(a) * rHour;
+      const isFilled = i <= h12;
+
+      // style: filled vs unfilled
+      if (isFilled) {
+        p.fill(60);
+        p.stroke(60);
+      } else {
+        p.fill(245);
+        p.stroke(160);
+      }
+      p.strokeWeight(2);
+
+      if (i === 3 || i === 6 || i === 9 || i === 12) {
+        drawTriangleAt(x, y, triSize, a + p.PI);
+      } else {
+        p.circle(x, y, hourMarkerR * 2);
+      }
+    }
 
     // second orbit marker
     const s = p.second();
