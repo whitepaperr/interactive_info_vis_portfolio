@@ -6,7 +6,7 @@
 registerSketch("sk15", (p) => {
   let table;
 
-  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep"];
   const YEAR = 2017;
   const STATE = "WA";
 
@@ -18,8 +18,8 @@ registerSketch("sk15", (p) => {
   const M = { top: 110, right: 140, bottom: 95, left: 120 };
   let plot = { x: 0, y: 0, w: 0, h: 0 };
 
-  let total = Array(12).fill(0);
-  let rainy = Array(12).fill(0);
+  let total = Array(9).fill(0);
+  let rainy = Array(9).fill(0);
   let maxTotal = 1;
   let maxRainy = 1;
   let yMaxTotalNice = 1;
@@ -74,6 +74,7 @@ registerSketch("sk15", (p) => {
       if (!d || d.getFullYear() !== YEAR) continue;
 
       const m = d.getMonth();
+	  if (m >= 9) continue;
       let prcp = parseFloat(table.getString(r, "PRCP"));
       if (isNaN(prcp)) prcp = 0;
 
@@ -91,7 +92,7 @@ registerSketch("sk15", (p) => {
     p.background(255);
 
     hover = -1;
-    const step = plot.w / 12;
+    const step = plot.w / 9;
     if (p.mouseX >= plot.x && p.mouseX <= plot.x + plot.w && p.mouseY >= plot.y && p.mouseY <= plot.y + plot.h) {
       hover = p.constrain(Math.floor((p.mouseX - plot.x) / step), 0, 11);
     }
@@ -111,7 +112,7 @@ registerSketch("sk15", (p) => {
     p.textAlign(p.LEFT, p.TOP);
     p.textStyle(p.BOLD);
     p.textSize(22);
-    p.text("Many Rainy Days in Seattle — But Low Intensity", M.left, 14);
+    p.text("Many Rainy Days in Seattle (2017) — But Low Intensity", M.left, 14);
 
     p.textStyle(p.NORMAL);
     p.fill(75);
@@ -124,8 +125,8 @@ registerSketch("sk15", (p) => {
   }
 
   function seasonalBackdrop() {
-    const step = plot.w / 12;
-    for (let i = 0; i < 12; i++) {
+    const step = plot.w / 9;
+    for (let i = 0; i < 9; i++) {
       const t = (-Math.cos((i / 11) * Math.PI * 2) + 1) / 2;
       const c = lerpRGB({ r: 200, g: 225, b: 255 }, { r: 255, g: 230, b: 200 }, t);
       p.noStroke();
@@ -168,19 +169,19 @@ registerSketch("sk15", (p) => {
     p.text("Rainy days", plot.x + plot.w, plot.y - 8);
     p.textStyle(p.NORMAL);
 
-    const step = plot.w / 12;
+    const step = plot.w / 9;
     p.fill(70);
     p.textSize(12);
     p.textAlign(p.CENTER, p.TOP);
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 9; i++) {
       p.text(MONTHS[i], plot.x + step * (i + 0.5), plot.y + plot.h + 8);
     }
   }
 
   function bars() {
-    const step = plot.w / 12;
+    const step = plot.w / 9;
 
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 9; i++) {
       const cx = plot.x + step * (i + 0.5 + BAR_SHIFT);
       const bw = step * 0.58;
       const h = p.map(total[i], 0, yMaxTotalNice, 0, plot.h);
@@ -197,13 +198,13 @@ registerSketch("sk15", (p) => {
   }
 
   function rainyLine() {
-    const step = plot.w / 12;
+    const step = plot.w / 9;
 
     p.stroke(120, 70, 170, 170);
     p.strokeWeight(3);
     p.noFill();
     p.beginShape();
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 9; i++) {
       const cx = plot.x + step * (i + 0.5);
       const y = p.map(rainy[i], 0, maxRainy, plot.y + plot.h, plot.y);
       p.vertex(cx, y);
@@ -211,7 +212,7 @@ registerSketch("sk15", (p) => {
     p.endShape();
 
     p.noStroke();
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 9; i++) {
       const cx = plot.x + step * (i + 0.5);
       const y = p.map(rainy[i], 0, maxRainy, plot.y + plot.h, plot.y);
       p.fill(120, 70, 170, i === hover ? 255 : 200);
@@ -220,9 +221,9 @@ registerSketch("sk15", (p) => {
   }
 
   function precipClouds() {
-    const step = plot.w / 12;
+    const step = plot.w / 9;
 
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 9; i++) {
       const cx = plot.x + step * (i + 0.5);
       const yLine = p.map(rainy[i], 0, maxRainy, plot.y + plot.h, plot.y);
 
@@ -236,7 +237,7 @@ registerSketch("sk15", (p) => {
   function hoverReadout() {
     if (hover < 0) return;
 
-    const step = plot.w / 12;
+    const step = plot.w / 9;
     const cx = plot.x + step * (hover + 0.5);
     const yLine = p.map(rainy[hover], 0, maxRainy, plot.y + plot.h, plot.y);
     const tx = cx - HOVER_TEXT_OFFSET;
